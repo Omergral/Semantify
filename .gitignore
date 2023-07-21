@@ -1,0 +1,13 @@
+__pycache__/
+eggs/
+build/
+develop-eggs/
+*.pyc
+*.egg-info/
+*.egg
+lib/
+multirun/**
+.vscode
+*.py[cod]
+*$py.class
+.DS_Store
