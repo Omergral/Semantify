@@ -120,65 +120,6 @@ Semantify is based on a self-supervised method that utilizes the semantic power 
   </div>
 </section>
 
-<!-- 
-<section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-steve">
-          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/steve.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-chair-tp">
-          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/chair-tp.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-shiba">
-          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/shiba.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-fullbody">
-          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/fullbody.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-blueshirt">
-          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/blueshirt.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-mask">
-          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/mask.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-coffee">
-          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/coffee.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-toby">
-          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/toby2.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
- -->
-
 <section class="section">
   <div class="container is-max-desktop">
     <!-- Abstract. -->
@@ -206,17 +147,15 @@ Semantify is based on a self-supervised method that utilizes the semantic power 
       <div class="column is-four-fifths">
         <h2 class="title is-3">Video</h2>
         <div class="publication-video">
-          <video poster="" id="semanitfy_vid" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/Semantify_Video.mp4"
-                    type="video/mp4">
+         <iframe src="https://www.youtube.com/embed/sHVKkA9-5WU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
     </div>
     <!--/ Paper video. -->
   </div>
-
+    <br/>
     <!-- Overview. -->
-    <div class="columns is-centered has-text-centered",style="margin-top: 15px">
+    <div class="columns is-centered has-text-centered" style="margin-top: 20px">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Method Overview</h2>
             <img src="./static/images/method.png"/>
@@ -236,9 +175,9 @@ Semantify is based on a self-supervised method that utilizes the semantic power 
   <div class="container is-max-desktop">
 
     <!-- Animation. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Animation</h2>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Results</h2>
 
         <!-- Interpolating. -->
         <h3 class="title is-4">Interpolating states</h3>
@@ -281,6 +220,154 @@ Semantify is based on a self-supervised method that utilizes the semantic power 
                       </div>
                     <input class="slider is-fullwidth is-large is-info"
                      id="interpolation-slider-petite"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+            </div>
+        <br/>
+      </div>
+        <div class="columns is-vcentered" style="margin-top: 10px">
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Smiling</div>
+                      <div id="interpolation-image-wrapper-smiling">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-smiling"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+                </div>
+
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Open Mouth</div>
+                      <div id="interpolation-image-wrapper-open-mouth">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-open-mouth"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+            </div>
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Serious</div>
+                      <div id="interpolation-image-wrapper-serious">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-serious"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+            </div>
+        <br/>
+        </div>
+        <div class="columns is-vcentered" style="margin-top: 10px">
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Thin</div>
+                      <div id="interpolation-image-wrapper-thin">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-thin"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+                </div>
+
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Small</div>
+                      <div id="interpolation-image-wrapper-small">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-small"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+            </div>
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Masculine</div>
+                      <div id="interpolation-image-wrapper-masculin">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-masculin"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+            </div>
+        <br/>
+        </div>
+        <div class="columns is-vcentered" style="margin-top: 10px">
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Fat</div>
+                      <div id="interpolation-image-wrapper-fat">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-fat"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+                </div>
+
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Ears Sticking Out</div>
+                      <div id="interpolation-image-wrapper-ears-out">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-ears-out"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+            </div>
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Long Neck</div>
+                      <div id="interpolation-image-wrapper-long-neck">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-long-neck"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+            </div>
+        <br/>
+        </div>
+        <div class="columns is-vcentered" style="margin-top: 10px">
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Lion</div>
+                      <div id="interpolation-image-wrapper-lion">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-lion"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+                </div>
+
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Cow</div>
+                      <div id="interpolation-image-wrapper-cow">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-cow"
+                     step="1" min="0" max="100" value="50" type="range">
+                    </div>
+            </div>
+            <div class="column columns nested-columns is-vcentered interpolation-panel">
+                <div class="column interpolation-video-column">
+                    <div style="text-align: center; font-size: large;">Cat</div>
+                      <div id="interpolation-image-wrapper-cat">
+                      Loading...
+                      </div>
+                    <input class="slider is-fullwidth is-large is-info"
+                     id="interpolation-slider-cat"
                      step="1" min="0" max="100" value="50" type="range">
                     </div>
             </div>
