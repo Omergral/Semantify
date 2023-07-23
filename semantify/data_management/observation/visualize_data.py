@@ -3,17 +3,15 @@ import json
 import logging
 import argparse
 from pathlib import Path
-from semantify.utils.utils import _3DMMUtils
+from semantify.utils.general import get_min_max_values, get_logger, normalize_data
 
 
 def main(args):
 
-    utils = _3DMMUtils()
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s: - %(message)s")
-    logger = logging.getLogger(__name__)
+    logger = get_logger(__name__)
 
     logger.info("calculating min max values")
-    min_max_dict = utils.get_min_max_values(args.working_dir)
+    min_max_dict = get_min_max_values(args.working_dir)
     rglob_suffix = "*_front.png" if args.sides else "*.png"
     files_generator = sorted(list(Path(args.working_dir).rglob(rglob_suffix)), key=lambda x: int(x.stem.split("_")[0]))
     if args.from_img_idx is not None:
@@ -45,7 +43,7 @@ def main(args):
         for idx, (key, value) in enumerate(labels.items()):
 
             # normalize the data
-            value = utils.normalize_data({key: value}, min_max_dict)[key]
+            value = normalize_data({key: value}, min_max_dict)[key]
 
             cv2.putText(
                 frontal_img,
@@ -86,13 +84,13 @@ def main(args):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "working_dir",
+        "--working_dir",
         type=str,
         default="/home/nadav2/dev/data/CLIP2Shape/images/saved_by_me",
     )
     parser.add_argument("--from_img_idx", type=int, default=None)
     parser.add_argument("--to_img_idx", type=int, default=None)
-    parser.add_argument("-s", "--sides", action="store_true", default=False)
+    parser.add_argument("-s", "--sides", action="store_true", default=False, help="whether the data is multiview or not")
     return parser.parse_args()
 
 

@@ -1,9 +1,8 @@
 import cv2
 import json
 import torch
-import hydra
+import argparse
 import trimesh
-import logging
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -13,12 +12,37 @@ from omegaconf import DictConfig
 from typing import Literal, List
 from semantify.utils._3dmm_utils import ThreeDMMUtils
 from semantify.utils.models_factory import ModelsFactory
+from semantify.utils.general import get_model_to_eval, get_plot_shape, get_renderer_kwargs, get_logger
+
+
+def args_parser():
+    parser = argparse.ArgumentParser(description="Evaluate performance")
+    parser.add_argument("--mapper_path", type=str, help="path to mapper ckpt")
+    parser.add_argument("--out_path", type=str, help="path to save results")
+    parser.add_argument(
+        "--method", 
+        type=str, 
+        choices=["diff_coords", "L2"],
+        help="method to evaluate - diff_coords means differential coordinates, L2 means L2 norm")
+    parser.add_argument("--gender", type=str, choices=["male", "female", "neutral"], default="neutral")
+    parser.add_argument("--model_type", type=str, choices=["smplx", "smpl", "flame", "smal"])
+    parser.add_argument(
+        "--optimize_feature",
+        type=str,
+        choices=["betas", "beta", "shape_params", "expression_params"],
+        help="feature to optimize",
+    )
+    parser.add_argument("--min_value", type=float, help="min slider value", default=15.0)
+    parser.add_argument("--max_value", type=float, help="max slider value", default=30.0)
+    parser.add_argument("--effect_threshold", type=float, help="effect threshold", default=0.5)
+    parser.add_argument("--color_map", type=str, help="color map", default="YlOrRd")
+    return parser.parse_args()
 
 
 class EvaluatePerformance:
     def __init__(
         self,
-        model_path: str,
+        mapper_path: str,
         out_path: str,
         method: Literal["diff_coords", "L2"],
         gender: Literal["male", "female", "neutral"],
@@ -30,7 +54,7 @@ class EvaluatePerformance:
         effect_threshold: float = 0.5,
         color_map: str = "YlOrRd",
     ):
-        self.utils = _3DMMUtils()
+        self._3dmm_utils = ThreeDMMUtils()
         self.model_type = model_type
         self.gender = gender
         self.method = method
@@ -42,31 +66,27 @@ class EvaluatePerformance:
         self.view_angles = range(0, 360, 45)
         self.num_rows, self.num_cols = self.get_collage_shape()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model, self.labels = self.utils.get_model_to_eval(model_path)
+        self.model, self.labels = get_model_to_eval(mapper_path)
         self.default_input = (torch.ones(1, len(self.labels), dtype=torch.float32) * 20.0).to("cuda")
         self.optimize_feature = optimize_feature
 
-        model_name = Path(model_path).stem
+        model_name = Path(mapper_path).stem
         self.out_path = Path(out_path) / model_name
         self.out_path.mkdir(parents=True, exist_ok=True)
 
-        self._get_logger()
+        self.logger = get_logger(__name__)
         self._load_renderer(renderer_kwargs)
         self._get_total_possible_idxs()
 
-    def _get_logger(self):
-        logging.basicConfig(level=logging.INFO, format="%(asctime)s: - %(message)s")
-        self.logger = logging.getLogger(__name__)
-
     def _load_renderer(self, kwargs):
-        self.renderer = self.models_factory.get_renderer(py3d=True, **kwargs)
+        self.renderer = self.models_factory.get_renderer(**kwargs)
 
     def _get_total_possible_idxs(self):
         if self.model_type in ["smpl", "smplx"]:
             self.verts, self.faces, self.vt, self.ft = self.models_factory.get_model(
                 gender=self.gender, get_smpl=self.model_type == "smpl"
             )
-            self.verts += self.utils.smplx_offset_numpy
+            self.verts += self._3dmm_utils.smplx_offset_numpy
             total_possible_verts = self.verts.shape[0]
         elif self.model_type == "flame":
             self.verts, self.faces, self.vt, self.ft = self.models_factory.get_model()
@@ -74,7 +94,7 @@ class EvaluatePerformance:
         self.total_possible_idxs = torch.range(0, total_possible_verts)
 
     def get_collage_shape(self):
-        num_rows, num_cols = self.utils.get_plot_shape(len(self.view_angles))[0]
+        num_rows, num_cols = get_plot_shape(len(self.view_angles))[0]
         if num_rows > num_cols:
             return num_cols, num_rows
         return num_rows, num_cols
@@ -184,9 +204,14 @@ class EvaluatePerformance:
             json.dump(json_data, f)
 
 
-@hydra.main(config_path="../../config", config_name="evaluate_performance")
-def main(cfg: DictConfig):
-    evaluate_performance = EvaluatePerformance(**cfg)
+def main():
+    args = args_parser()
+    renderer_kwargs = get_renderer_kwargs(
+        model_type=args.model_type,
+        **{"background_color": [255.0, 255.0, 255.0],
+           "texture_optimization": True}
+        )
+    evaluate_performance = EvaluatePerformance(renderer_kwargs=renderer_kwargs, **vars(args))
     evaluate_performance.evaluate()
 
 

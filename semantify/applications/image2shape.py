@@ -1,17 +1,24 @@
 import cv2
 import torch
-import hydra
+import argparse
 import numpy as np
 from PIL import Image
 from pathlib import Path
-from omegaconf import DictConfig, OmegaConf
 from typing import Dict, Tuple, Literal, Optional
 from semantify.utils._3dmm_utils import ThreeDMMUtils
 from semantify.utils.image2shape import Image2ShapeUtils
 from semantify.utils.paths_utils import get_model_abs_path
-from semantify.utils.general import get_model_feature_name, get_model_to_eval
+from semantify.utils.general import get_model_feature_name, get_model_to_eval, get_renderer_kwargs
 
-OmegaConf.register_new_resolver("get_model_abs_path", get_model_abs_path)
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Image2Shape")
+    parser.add_argument("--images_paths", type=str, nargs="+", help="Paths to images", required=True)
+    parser.add_argument("--model_type", type=str, choices=["smplx", "smpl", "flame", "smal"], required=True)
+    parser.add_argument("--specific", type=str, choices=["male", "female", "neutral", "expression", "shape"], default=None)
+    parser.add_argument("--output_path", type=str, help="Output path", default="output/")
+    args = parser.parse_args()
+    return args
 
 
 class Image2Shape(Image2ShapeUtils):
@@ -105,10 +112,21 @@ class Image2Shape(Image2ShapeUtils):
         print("*" * 50)
 
 
-@hydra.main(config_path="../config", config_name="image2shape")
-def main(cfg: DictConfig) -> None:
-    hbw_comparison = Image2Shape(**cfg)
-    for image_path in cfg.images_paths:
+def main() -> None:
+    args = parse_args()
+    renderer_kwargs = get_renderer_kwargs(
+        model_type=args.model_type,
+        **{"background_color": [255.0, 255.0, 255.0]}
+    )
+    model_path = get_model_abs_path(args.model_type, args.specific)
+    hbw_comparison = Image2Shape(
+        model_path=model_path,
+        model_type=args.model_type,
+        renderer_kwargs=renderer_kwargs,
+        specific=args.specific,
+        output_path=args.output_path,
+    )
+    for image_path in args.images_paths:
         hbw_comparison(Path(image_path))
 
 

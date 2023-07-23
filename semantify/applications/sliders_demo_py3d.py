@@ -3,46 +3,107 @@ import json
 import clip
 import torch
 import tkinter
-import hydra
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 from PIL import ImageTk, Image
 from pytorch3d.io import save_obj
-from omegaconf import DictConfig, OmegaConf
-from typing import Dict, Any, Literal, List, Union, Optional
+from omegaconf import DictConfig
+from typing import Dict, Any, Literal, List, Optional
 from semantify.assets.spin.spin_model import hmr, process_image
 from semantify.utils._3dmm_utils import ThreeDMMUtils
 from semantify.utils.models_factory import ModelsFactory
-from semantify.utils.general import get_model_to_eval
 from semantify.utils.paths_utils import get_model_abs_path, append_to_root_dir
+from semantify.utils.general import get_model_to_eval, get_logger, get_renderer_kwargs, get_sliders_limiters
 
 
-OmegaConf.register_new_resolver("get_model_abs_path", get_model_abs_path)
+def parse_args():
+    parser = argparse.ArgumentParser(description="Sliders demo pytorch3d")
+    parser.add_argument(
+        "--model_type",
+        type=str,
+        required=True,
+        choices=["smplx", "flame", "smpl", "smal"],
+        help="Model type",
+    )
+    parser.add_argument(
+        "--specific",
+        type=str,
+        default=None,
+        choices=["expression", "shape", "male", "female", "neutral"],
+        help="Specific model type, leave empty for SMAL",
+    )
+    parser.add_argument(
+        "--mapper_path",
+        type=str,
+        default=None,
+        help="Path to the mapper to use for the model, \
+        set only if you do not want to use Semantify's mappers",
+    )
+    parser.add_argument(
+        "--image_path",
+        type=str,
+        default=None,
+        help="If you want to run the demo on an image, provide the path to the image",
+    )
+    parser.add_argument(
+        "--disable_limiters",
+        action="store_true",
+        help="Disable limiters for the sliders, default is False",
+    )
+    parser.add_argument(
+        "--num_coeffs",
+        type=int,
+        default=10,
+        help="Number of coefficients to use for the model",
+    )
+    parser.add_argument(
+        "--out_dir",
+        type=str,
+        default=None,
+        help="Output directory to save the rendered images",
+    )
+    parser.add_argument(
+        "--use_raw_blendshapes",
+        action="store_true",
+        help="Use raw blendshapes for the model, default is False",
+    )
+    parser.add_argument(
+        "--gt_path",
+        type=str,
+        default=None,
+        help="If you want to run the demo in comparison mode, provide the path to the ground truth shape",
+    )
+    parser.add_argument(
+        "--A_pose",
+        action="store_true",
+        help="Use A pose for the body pose, default is T pose",
+    )
+    parser.add_argument(
+        "--show_values",
+        action="store_true",
+        help="Show the values of the sliders",
+    )
+    return parser.parse_args()
 
 
 class SlidersApp:
     def __init__(
         self,
         model_type: Literal["smplx", "flame", "smpl", "smal"],
-        gender: Literal["male", "female", "neutral"],
         device: str = torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
+        specific: Literal["expression", "shape", "male", "female", "neutral"] = None,
         num_coeffs: int = 10,
-        on_parameters: bool = False,
         out_dir: Optional[str] = None,
-        predict_jaw_pose: bool = False,
         renderer_kwargs: Optional[DictConfig] = None,
         sliders_limiters: Optional[DictConfig] = None,
-        model_path: Optional[str] = None,
-        image_path: Union[str, Literal["random"]] = None,
-        image2shape: bool = False,
-        comparison_mode: bool = False,
+        mapper_path: Optional[str] = None,
+        image_path: Optional[str] = None,
+        gt_path: Optional[str] = None,
         A_pose: bool = False,
         show_values: bool = False,
-        specific: Optional[Literal["expression", "shape"]] = None,
-        with_face: bool = False,
     ):
-
         self.root = None
         self.img_label = None
         self.target_image = None
@@ -51,27 +112,22 @@ class SlidersApp:
         self.visualize_error = False
         self.device = device
         self.A_pose = A_pose
-        self.image2shape = image2shape
+        self.image2shape = image_path is not None
         self.show_values = show_values
         self.num_coeffs = num_coeffs
-        self.on_parameters = on_parameters
-        self.predict_jaw_pose = predict_jaw_pose
-        self.comparison_mode = comparison_mode
+        self.on_parameters = mapper_path is None
+        self.comparison_mode = gt_path is not None
+        self.logger = get_logger(__name__)
+
+        self._assertions(image_path=image_path, mapper_path=mapper_path, model_type=model_type, specific=specific)
+
+        self.logger.info(f"Found device: {self.device}")
+        self.logger.info(f"Initalizing sliders app with model type: {model_type} - {specific}")
+
+        gender = specific if model_type in ["smplx", "smpl"] else "neutral"
 
         self.model_type = model_type
-        if sliders_limiters is not None:
-            if model_type in ["smplx", "smpl"]:
-                self.sliders_limiters = sliders_limiters[gender]
-            elif model_type == "flame":
-                self.sliders_limiters = sliders_limiters["expression" if with_face else "shape"]
-            elif model_type == "smal":
-                self.sliders_limiters = sliders_limiters
-            else:
-                raise ValueError(f"model_type: {model_type} is not supported")
-        else:
-            self.sliders_limiters = None
-
-        self._assertions(image_path=image_path, model_path=model_path, model_type=model_type, gender=gender)
+        self.sliders_limiters = sliders_limiters
 
         self.outpath = None
         if out_dir is not None:
@@ -87,11 +143,10 @@ class SlidersApp:
         self._3dmm_utils = ThreeDMMUtils()
         self.models_factory = ModelsFactory(self.model_type)
         self.gender = gender
+        self.with_face = True if model_type == "flame" and specific == "expression" else False
 
         if self.on_parameters:
-            self.with_face = with_face
-        else:
-            self.with_face = True if model_type == "flame" and specific == "expression" else False
+            self.logger.info("No model path provided, using original blendshapes")
 
         if self.A_pose:
             self.body_pose = self._3dmm_utils.body_pose.clone()
@@ -100,11 +155,11 @@ class SlidersApp:
 
         if self.comparison_mode:
             self.color_map = plt.get_cmap("coolwarm")
-            self._get_target_shape(image_path.replace(".png", ".json"))
+            self._get_target_shape(gt_path)
 
         if image_path is not None:
             self.target_image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
-            if self.model_type in ["smpl", "smplx"] and not on_parameters:
+            if self.model_type in ["smpl", "smplx"] and not self.on_parameters:
                 spin_model = hmr(append_to_root_dir("assets/spin/smpl_mean_params.npz")).to(device)
                 checkpoint = torch.load(append_to_root_dir("assets/spin/model_checkpoint.pt"))
                 spin_model.load_state_dict(checkpoint["model"], strict=False)
@@ -114,7 +169,7 @@ class SlidersApp:
                     out = spin_model(img_norm.to(device))
                 self.body_pose = out[0][:, 1:-2].cpu()
 
-        self.model_kwargs = self.models_factory.get_default_params(with_face, num_coeffs=num_coeffs)
+        self.model_kwargs = self.models_factory.get_default_params(self.with_face, num_coeffs=num_coeffs)
         if self.model_type == "smpl":
             self.model_kwargs["get_smpl"] = True
         if hasattr(self, "num_coeffs"):
@@ -144,10 +199,10 @@ class SlidersApp:
         self.camera_scales = {}
         self.initialize_params()
 
-        self.ignore_random_jaw = True if model_type == "flame" and with_face else False
+        self.ignore_random_jaw = True if model_type == "flame" and self.with_face else False
 
-        if model_path is not None:
-            self.model, labels = get_model_to_eval(model_path)
+        if mapper_path is not None:
+            self.model, labels = get_model_to_eval(mapper_path)
             self._get_sliders_values(labels, image_path)
             self.input_for_model = torch.tensor(list(self.sliders_values.values()), dtype=torch.float32)[None]
 
@@ -171,21 +226,25 @@ class SlidersApp:
                 self.beta = self.model_kwargs["beta"]
                 self.params.append(self.beta)
 
-    def _assertions(self, image_path: str = None, model_path: str = None, model_type: str = None, gender: str = None):
+    def _assertions(self, model_type: str, specific: str, image_path: str = None, mapper_path: str = None):
         if image_path is not None:
             assert Path(image_path).exists(), "Image path should be a valid path"
             assert (
-                model_path is not None or self.comparison_mode is True
+                mapper_path is not None or self.comparison_mode is True
             ), "Model path should be a valid path if image path is provided"
         assert model_type in ["smplx", "flame", "smal", "smpl"], "Model type should be smplx, smpl, flame or smal"
-        assert gender in ["male", "female", "neutral"], "Gender is not valid"
+        if model_type != "smal":
+            if model_type in ["smplx", "smpl"]:
+                assert specific in ["male", "female", "neutral"], "Specific is not valid"
+            else:
+                assert specific in ["shape", "expression"], "Specific is not valid"
 
     @staticmethod
     def _flatten_list_of_lists(list_of_lists: List[List[str]]) -> List[str]:
         return [item for sublist in list_of_lists for item in sublist]
 
     def _get_sliders_values(self, labels: List[List[str]], image_path: str = None):
-        if image_path is None:  # or self.comparison_mode:
+        if image_path is None:
             self.sliders_values = {label[0]: 20 for label in labels}
         else:
             if not hasattr(self, "clip_model"):
@@ -199,6 +258,53 @@ class SlidersApp:
 
     def _load_clip_model(self):
         self.clip_model, self.clip_preprocess = clip.load("ViT-B/32", device=self.device)
+
+    def _get_target_shape(self, gt_path: str):
+        """
+        Get the target shape from the ground truth path
+
+        Args:
+            gt_path (str): Path to the ground truth shape
+
+            We assume the file is either:
+            - .npy file containing the vertices
+            - .json file containing the shape parameters
+                for smplx and smpl: data["betas"] - shape coefficients
+                for smal: data["beta"] - shape coefficients
+                for flame shape: data["shape_params"] - shape coefficients
+                for flame expression: data["expression_params"] - expression coefficients
+        """
+        get_smpl = True if self.model_type == "smpl" else False
+        if gt_path.endswith(".npy"):
+            verts = np.load(gt_path)
+            _, faces, vt, ft = self.models_factory.get_model()
+        elif gt_path.endswith(".json"):
+            feature = self.name
+            with open(gt_path) as f:
+                data = json.load(f)
+            target_shape_list = data[feature]
+            target_shape_tensor = torch.tensor(target_shape_list, dtype=torch.float32)
+            verts, faces, vt, ft = self.models_factory.get_model(
+                **{
+                    feature: target_shape_tensor,
+                    "get_smpl": get_smpl,
+                    "body_pose": self.body_pose,
+                    "gender": self.gender,
+                }
+            )
+        else:
+            raise ValueError(f"gt_path: {gt_path} is not valid")
+
+        if get_smpl:
+            verts += self._3dmm_utils.smpl_offset_numpy
+        else:
+            verts += self._3dmm_utils.smplx_offset_numpy
+        self.target_mesh_features = {
+            "verts": verts,
+            "faces": faces,
+            "vt": vt,
+            "ft": ft,
+        }
 
     def update_betas(self, idx: int):
         def update_betas_values(value: float):
@@ -241,7 +347,13 @@ class SlidersApp:
 
             self.verts, self.faces, self.vt, self.ft = self._3dmm_utils.get_flame_model(shape_params=self.face_shape)
 
-            img = self.renderer.render_mesh(verts=self.verts, faces=self.faces[None], vt=self.vt, ft=self.ft)
+            img = self.renderer.render_mesh(
+                verts=self.verts, 
+                faces=self.faces[None], 
+                vt=self.vt, 
+                ft=self.ft, 
+                rotate_mesh=[{"degrees": self.azim, "axis": "y"}, {"degrees": self.elev, "axis": "x"}]
+            )
             img = self.adjust_rendered_img(img)
             self.img = img
             img = ImageTk.PhotoImage(image=img)
@@ -259,7 +371,13 @@ class SlidersApp:
             self.verts, self.faces, self.vt, self.ft = self._3dmm_utils.get_flame_model(
                 expression_params=self.face_expression[..., :10]
             )
-            img = self.renderer.render_mesh(verts=self.verts, faces=self.faces[None], vt=self.vt, ft=self.ft)
+            img = self.renderer.render_mesh(
+                verts=self.verts, 
+                faces=self.faces[None], 
+                vt=self.vt, 
+                ft=self.ft, 
+                rotate_mesh=[{"degrees": self.azim, "axis": "y"}, {"degrees": self.elev, "axis": "x"}]
+            )
             img = self.adjust_rendered_img(img)
             self.img = img
             img = ImageTk.PhotoImage(image=img)
@@ -274,7 +392,13 @@ class SlidersApp:
                 value = float(value)
             self.beta[0, idx] = value
             self.verts, self.faces, self.vt, self.ft = self._3dmm_utils.get_smal_model(beta=self.beta)
-            img = self.renderer.render_mesh(verts=self.verts, faces=self.faces[None], vt=self.vt, ft=self.ft)
+            img = self.renderer.render_mesh(
+                verts=self.verts, 
+                faces=self.faces[None], 
+                vt=self.vt, 
+                ft=self.ft, 
+                rotate_mesh=[{"degrees": self.azim, "axis": "y"}, {"degrees": self.elev, "axis": "x"}]
+            )
             img = self.adjust_rendered_img(img)
             self.img = img
             img = ImageTk.PhotoImage(image=img)
@@ -307,17 +431,10 @@ class SlidersApp:
                         self.verts += self._3dmm_utils.smplx_offset_numpy
                 elif self.model_type == "flame":
                     if self.with_face:
-                        if self.predict_jaw_pose:
-                            jaw_pose = out[..., 0]
-                            expression_params = out[..., 1:]
-                            self.verts, self.faces, self.vt, self.ft = self._3dmm_utils.get_flame_model(
-                                expression_params=expression_params, jaw_pose=jaw_pose
-                            )
-                        else:
-                            expression_params = out
-                            self.verts, self.faces, self.vt, self.ft = self._3dmm_utils.get_flame_model(
-                                expression_params=expression_params
-                            )
+                        expression_params = out
+                        self.verts, self.faces, self.vt, self.ft = self._3dmm_utils.get_flame_model(
+                            expression_params=expression_params
+                        )
                     else:
                         self.verts, self.faces, self.vt, self.ft = self._3dmm_utils.get_flame_model(shape_params=out)
 
@@ -346,8 +463,7 @@ class SlidersApp:
         if self.comparison_mode:
             if self.visualize_error:
                 diffs = self._calc_vertices_distance()
-                # vertex_colors = self.color_map(diffs / diffs.max())[:, :3]
-                vertex_colors = self.color_map(diffs / 0.1094)[:, :3]
+                vertex_colors = self.color_map(diffs / diffs.max())[:, :3]
                 vertex_colors = torch.tensor(vertex_colors).float().to(self.device)
                 if vertex_colors.ndim == 2:
                     vertex_colors = vertex_colors[None, ...]
@@ -355,7 +471,6 @@ class SlidersApp:
                 vertex_colors = torch.ones(*self.verts[None].shape, device=self.device) * torch.tensor(
                     [0.7, 0.7, 0.7], device=self.device
                 )
-
             self.vertex_colors = vertex_colors
             self.target_mesh_features.update({"texture_color_values": vertex_colors})
 
@@ -414,7 +529,13 @@ class SlidersApp:
     def add_texture(self):
         self.renderer_kwargs.update({"use_tex": True})
         self.renderer = self.models_factory.get_renderer(**self.renderer_kwargs)
-        img = self.renderer.render_mesh(verts=self.verts, faces=self.faces[None], vt=self.vt, ft=self.ft)
+        img = self.renderer.render_mesh(
+            verts=self.verts, 
+            faces=self.faces[None], 
+            vt=self.vt, 
+            ft=self.ft, 
+            rotate_mesh=[{"degrees": self.azim, "axis": "y"}, {"degrees": self.elev, "axis": "x"}]
+        )
         img = self.adjust_rendered_img(img)
         self.img = img
         img = ImageTk.PhotoImage(image=img)
@@ -617,10 +738,7 @@ class SlidersApp:
         self.img_label.image = img
 
     def visual_error(self):
-        if self.visualize_error:
-            self.visualize_error = False
-        else:
-            self.visualize_error = True
+        self.visualize_error = not self.visualize_error
         img = self.renderer.render_mesh(
             verts=self.verts,
             faces=self.faces[None],
@@ -973,7 +1091,7 @@ class SlidersApp:
             "resolution": 0.01,
             "orient": tkinter.HORIZONTAL,
             "bg": "white",
-            "troughcolor": "black",
+            "troughcolor": "pink",
             "width": 10,
             "length": 200,
             "borderwidth": 0,
@@ -990,6 +1108,7 @@ class SlidersApp:
             "troughcolor": "pink",
             "width": 10,
             "length": 200,
+            "highlightbackground": "white",
             "borderwidth": 0,
             "showvalue": 1 if self.show_values else 0,
         }
@@ -1021,9 +1140,38 @@ class SlidersApp:
         }
 
 
-@hydra.main(config_path="../config", config_name="sliders_demo_py3d")
-def main(cfg):
-    app = SlidersApp(**cfg)
+def main():
+    args = parse_args()
+    renderer_kwargs = get_renderer_kwargs(
+        model_type=args.model_type, 
+        **{'background_color': [255.0, 255.0, 255.0], "texture_optimization": True})
+
+    if not args.use_raw_blendshapes:
+        if args.mapper_path is None:
+            mapper_path = get_model_abs_path(args.model_type, args.specific)
+        else:
+            mapper_path = args.mapper_path
+    else:
+        mapper_path = None
+
+    if not args.disable_limiters and not args.use_raw_blendshapes:
+        sliders_limiters = get_sliders_limiters(args.model_type, args.specific)
+    else:
+        sliders_limiters = None
+
+    app = SlidersApp(
+        model_type=args.model_type,
+        specific=args.specific,
+        num_coeffs=args.num_coeffs,
+        out_dir=args.out_dir,
+        renderer_kwargs=renderer_kwargs,
+        mapper_path=mapper_path,
+        sliders_limiters=sliders_limiters,
+        image_path=args.image_path,
+        gt_path=args.gt_path,
+        A_pose=args.A_pose,
+        show_values=args.show_values,
+    )
     app.create_application()
 
 

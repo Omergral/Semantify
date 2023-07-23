@@ -81,7 +81,7 @@ class ChoosingDescriptors(ChoosingDescriptorsUtils):
 
         self.clusters = self.get_clusters(Path(descriptors_clusters_json))
 
-        get_logger(__name__)
+        self.logger = get_logger(__name__)
 
     def initial_filter(self):
         """

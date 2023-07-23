@@ -1,7 +1,8 @@
 DEFAULT_RENDERER_KWARGS = {
-    "py3d": False,
+    "py3d": True,
     "img_size": [1024, 1024],
-    "use_tex": True,
+    "use_tex": False,
+    "texture_optimization": False,
     "background_color": [0.0, 0.0, 0.0],
 }
 

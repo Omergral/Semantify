@@ -42,7 +42,7 @@ class Pytorch3dRenderer:
         tex_path = TexturesPaths[model_type.upper()].value if model_type is not None and use_tex else None
         self.tex_map = cv2.cvtColor(cv2.imread(tex_path), cv2.COLOR_BGR2RGB) if tex_path is not None else None
         self.height, self.width = (
-            img_size if isinstance(img_size, tuple) or isinstance(img_size, ListConfig) else (img_size, img_size)
+            img_size if isinstance(img_size, tuple) or isinstance(img_size, ListConfig) or isinstance(img_size, list) else (img_size, img_size)
         )
 
         R, T = look_at_view_transform(dist=dist, azim=azim, elev=elev)

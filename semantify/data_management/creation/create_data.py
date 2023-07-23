@@ -13,14 +13,14 @@ from semantify.utils.renderers import Open3dRenderer, Pytorch3dRenderer
 def args_parser():
     parser = argparse.ArgumentParser(description="create data")
     parser.add_argument("--output_path", type=str, required=True, help="path to save data")
-    parser.add_argument("--gender", type=str, choices=["male", "female", "neutral"], help="model's gender")
+    parser.add_argument("--use_tex", action="store_true", help="use texture - HIGHLY RECOMMENDED")
+    parser.add_argument("--specific", type=str, choices=["male", "female", "neutral", "expression", "shape"], help="model's specific")
     parser.add_argument("--model_type", type=str, choices=["smpl", "smal", "smplx", "flame"], help="model type")
     parser.add_argument("--multiview", action="store_true", help="render multiview images")
-    parser.add_argument("--img_tag", type=str, help="image tag", default=None)
-    parser.add_argument("--with_face", action="store_true", help="for flame expressions")
+    parser.add_argument("--img_tag", type=str, help="image tag (IMG_TAG.png)", default=None)
     parser.add_argument("--num_coeffs", type=int, help="number of coefficients", default=10)
     parser.add_argument("--num_of_imgs", type=int, help="number of images to create", default=100)
-    parser.add_argument("--py3d", action="store_true", help="use pytorch3d renderer")
+    parser.add_argument("--o3d", action="store_true", help="use open3d renderer instead of pytorch3d, not supported yet")
     parser.add_argument("--img_size", type=int, help="image size", default=1024)
     parser.add_argument("--background_color", type=float, nargs="+", help="background color", default=[0.0, 0.0, 0.0])
     return parser.parse_args()
@@ -31,10 +31,9 @@ class DataCreator:
         self,
         output_path: str,
         model_type: Literal["smpl", "smal", "smplx", "flame"],
-        gender: Literal["male", "female", "neutral"],
+        specific: Literal["male", "female", "neutral", "expression", "shape"] = None,
         multiview: bool = False,
         img_tag: Optional[str] = None,
-        with_face: bool = False,
         num_coeffs: int = 10,
         num_of_imgs: int = 1000,
         renderer_type: Literal["pytorch3d", "open3d"] = "pytorch3d",
@@ -44,12 +43,12 @@ class DataCreator:
         # parameters from config
         self.multiview = multiview
         self.img_tag = img_tag
-        self.with_face = with_face
+        self.with_face = specific == "expression" and model_type == "flame"
         self.num_coeffs = num_coeffs
         self.num_of_imgs = num_of_imgs
         self.output_path: Path = Path(output_path)
         self.model_type = model_type
-        self.gender = gender
+        self.gender = specific if model_type in ["smpl", "smplx"] else "neutral"
         self.renderer_type: Literal["pytorch3d", "open3d"] = renderer_type
         self.get_smpl = True if self.model_type == "smpl" else False
 
@@ -75,7 +74,7 @@ class DataCreator:
                     )
                     + 1
                 )
-            except IndexError:
+            except IndexError or ValueError:
                 img_id = 0
 
             # set image name
@@ -122,7 +121,7 @@ class DataCreator:
 
 def main():
     args = args_parser()
-    renderer_kwargs = get_renderer_kwargs(**vars(args))
+    renderer_kwargs = get_renderer_kwargs(py3d=not args.o3d, **vars(args))
     data_creator = DataCreator(renderer_kwargs=renderer_kwargs, **vars(args))
     data_creator()
 

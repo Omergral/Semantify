@@ -1,5 +1,4 @@
 import cv2
-import h5py
 import tqdm
 import clip
 import torch
@@ -10,7 +9,7 @@ from omegaconf import DictConfig
 from typing import Any, Dict, List, Literal, Tuple, Union
 from semantify.utils.general import get_plot_shape
 from semantify.utils._3dmm_utils import ThreeDMMUtils
-from semantify.utils.renderers import Pytorch3dRenderer
+from semantify.utils.models_factory import ModelsFactory, Pytorch3dRenderer
 
 
 class Image2ShapeUtils:
@@ -24,7 +23,7 @@ class Image2ShapeUtils:
         return possible_gender
 
     def _load_renderer(self, kwargs: Union[DictConfig, Dict[str, Any]]):
-        self.renderer: Pytorch3dRenderer = Pytorch3dRenderer(**kwargs)
+        self.renderer: Pytorch3dRenderer = ModelsFactory(self.model_type).get_renderer(**kwargs)
 
     def _load_body_pose(self, body_pose_path: str):
         self.body_pose: torch.Tensor = torch.from_numpy(np.load(body_pose_path))
@@ -42,16 +41,6 @@ class Image2ShapeUtils:
     def _load_flame_smal_models(self, model_path: str):
         self.model, labels = self.utils.get_model_to_eval(model_path)
         self.labels = self._flatten_list_of_lists(labels)
-
-    def _from_h5_to_img(
-        self, h5_file_path: Union[str, Path], gender: Literal["male", "female", "neutral"], renderer: Pytorch3dRenderer
-    ) -> Tuple[np.ndarray, torch.Tensor]:
-        data = h5py.File(h5_file_path, "r")
-        shape_vector = torch.tensor(data["betas"])[None].float()
-        render_mesh_kwargs = self.get_render_mesh_kwargs(shape_vector, gender=gender)
-        rendered_img = renderer.render_mesh(**render_mesh_kwargs)
-        rendered_img = self.adjust_rendered_img(rendered_img)
-        return rendered_img, shape_vector
 
     def _load_comparison_data(self, path: Union[str, Path]):
         self.comparison_data: torch.Tensor = torch.from_numpy(np.load(path))

@@ -303,8 +303,32 @@ def get_renderer_kwargs(model_type: Literal["flame", "smplx", "smpl", "smal"], *
     return renderer_kwargs
 
 
+def get_sliders_limiters(
+    model_type: Literal["flame", "smplx", "smpl", "smal"],
+    specific: Optional[Literal["male", "female", "neutral", "expression", "shape"]] = None,
+) -> Dict[str, List[float]]:
+    """
+    Description
+    -----------
+    gets the sliders limiters from the config file
+
+    Args
+    ----
+    model_type (Literal["flame", "smplx", "smpl", "smal"]) = the model type
+    specific (Optional[Literal["male", "female", "neutral", "expression", "shape"]]) = the specific type of the model
+
+    Returns
+    -------
+    sliders_limiters (Dict[str, List[float]]) = the sliders limiters
+    """
+    with initialize(config_path="../config/sliders_limiters"):
+        cfg = compose(config_name=model_type)
+    sliders_limiters = cfg[specific] if specific is not None else cfg
+    return sliders_limiters
+
+
 def get_descriptors(
-    type: Literal["flame", "smplx", "smpl", "smal"],
+    model_type: Literal["flame", "smplx", "smpl", "smal"],
     specific: Optional[Literal["male", "female", "neutral", "expression", "shape"]] = None,
 ) -> List[str]:
     """
@@ -314,11 +338,12 @@ def get_descriptors(
 
     Args
     ----
-    type (Literal["flame", "smplx", "smpl", "smal"]) = the model type
+    model_type (Literal["flame", "smplx", "smpl", "smal"]) = the model type
     specific (Optional[Literal["male", "female", "neutral", "expression", "shape"]]) = the specific type of the model
 
     Returns
     -------
     List[str] = the descriptors
     """
-    return DESCRIPTORS[f"{type.upper()}_{specific.upper()}" if specific is not None else type.upper()]
+    model_type = "smplx" if model_type == "smpl" else model_type
+    return DESCRIPTORS[f"{model_type.upper()}_{specific.upper()}" if specific is not None else model_type.upper()]
