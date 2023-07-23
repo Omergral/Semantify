@@ -1,0 +1,39 @@
+name: semantify
+channels:
+      - nvidia
+      - pytorch3d
+      - pytorch
+      - conda-forge
+      - anaconda
+dependencies:
+      - python=3.8.13
+      - cudatoolkit
+      - pip=22.3.1
+      - cmake=3.25.2
+      - pytorch=1.9.1
+      - pytorch3d=0.6.1
+      - gitpython=3.1.31
+      - pip:
+              - torchvision==0.10.1
+              - imutils==0.5.4
+              - scipy==1.9.1
+              - open3d==0.14.1
+              - opencv-python==4.5.5.62
+              - dataclass-dict-convert==1.7.1
+              - networkx==2.8.6
+              - scikit-image==0.19.3
+              - tensorboard==2.11.2
+              - omegaconf==2.1.2
+	      - attrdict==2.0.1
+	      - nltk==3.7
+              - pytorch_lightning==1.5.7
+              - chumpy==0.70
+              - trimesh==3.16.0
+              - imageio==2.21.3
+	      - hydra-core==1.1.1
+              - Pillow==9.2.0
+	      - iopath==0.1.9
+	      - tkinter
+	      - tqdm==4.64.0
+	      - git+https://github.com/openai/CLIP.git
+

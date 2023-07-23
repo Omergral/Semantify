@@ -11,7 +11,8 @@ from pathlib import Path
 from tqdm import tqdm
 from omegaconf import DictConfig
 from typing import Literal, List
-from semantify.utils.utils import _3DMMUtils, ModelsFactory
+from semantify.utils._3dmm_utils import ThreeDMMUtils
+from semantify.utils.models_factory import ModelsFactory
 
 
 class EvaluatePerformance:
