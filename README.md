@@ -8,5 +8,18 @@
 <p align="center">
     <img src="https://github.com/Omergral/Semantify/blob/master/static/images/semantify_teaser-bg.png" alt="example" width=80%>
     <br>
-    <em>Semantify offers a method to create and edit a 3D parametric model using semantically meaningful descriptors. Semantify is based on a self-supervised method that utilizes the semantic power of CLIP language-vision model to build a mapping between semantic descriptors to 3DMM model coefficients. This can be used in an interactive application defining a slider for each descriptor (a), or to fit a model to an image in a zero shot manner by feeding the image into CLIP and obtaining a vector of semantic scores that can be mapped to shape parameters (b)</em>
+    <em>Semantify offers a method to create and edit a 3D parametric model using semantically meaningful descriptors. Semantify is based on a self-supervised method that utilizes the semantic power of CLIP language-vision model to build a mapping between semantic descriptors to 3DMM model coefficients. This can be used in an interactive application defining a slider for each descriptor (a), or to fit a model to an image in a zero shot manner by feeding the image into CLIP and obtaining a vector of semantic scores that can be mapped to shape parameters (b).</em>
 </p>
+
+## Installation
+1. Clone the repo:
+```bash
+git clone https://github.com/Omergral/Semantify.git
+cd Semantify 
+```
+2. Create new conda environment:
+```bash
+conda env create -f requirements.yml
+conda activate semantify
+pip install -e .
+```
