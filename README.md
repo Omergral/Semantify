@@ -13,12 +13,12 @@
 
 ## Installation
 1. Clone the repo:
-```bash
+```
 git clone https://github.com/Omergral/Semantify.git
 cd Semantify 
 ```
 2. Create new conda environment:
-```bash
+```
 conda env create -f requirements.yml
 conda activate semantify
 pip install -e .
@@ -29,7 +29,7 @@ TO BE FILLED
 
 ## Run Demos
 ### Sliders Application
-```bash
+```
 python semantify/applications/sliders_demo_py3d.py --model_type <MODELTYPE> --specific <SPECIFIC>
 ```
 <ins>Arguments Description:</ins>
@@ -40,7 +40,7 @@ python semantify/applications/sliders_demo_py3d.py --model_type <MODELTYPE> --sp
 * ```use_raw_blendshapes``` - Use the raw parametric blendshapes of the model
 
 ### Image-to-Shape
-```bash
+```
 python semantify/applications/image2shape.py --images_paths <IMAGES_PATHS> --model_type <TYPE> --specific <SPECIFIC> --output_path <PATH>
 ```
 
@@ -52,24 +52,24 @@ python semantify/applications/image2shape.py --images_paths <IMAGES_PATHS> --mod
 
 ## Dataset Creation
 1. Create Data
-   ```bash
+   ```
    python semantify/data_management/creation/create_data.py --output_path <PATH> --model_type <TYPE> --specific <SPECIFIC> --use_tex --multiview --num_of_imgs <NUM>
    ```
-   This script will create as many images as you like, by randomly sample the parametric space of the given 3DMM. The output for a single sample will be a ```.png``` file and ```.json``` file that contains the sampled shape coefficients.<br>
+   This script will create as many images as you like, by randomly sample the parametric space of the given 3DMM. The output for a single sample will be a ```.png``` file and ```.json``` file that contains the sampled shape coefficients.<br><br>
    <ins>Arguments Description:</ins>
    * ```output_path (str)``` - Path to a folder to store the data
    * ```use_tex``` - Use models textures (if any) - HIGHLY RECOMMENDED
    * ```multiview``` - Render the model from both frontal and side views instead of frontal only
    * ```num_of_imgs (int)``` - How many images to create
-<br>
-2.  Generate CLIP's Ratings
-   ```bash
+
+2. Generate CLIP's Ratings
+   ```
    python semantify/data_management/creation/clip_encoder.py --imgs_dir <PATH> --model_type <TYPE> --specific <SPECIFIC> --multiview
    ```
-   This script will run over the directory of images provided as input, along with a set of word descriptors and generate CLIP's ratings for each image against all descriptors. The output for a single sample will be a ```.json``` file that contains the ratings for each descriptor.<br>
-   <ins>Arguments Description:</ins>
+   This script will run over the directory of images provided as input, along with a set of word descriptors and generate CLIP's           ratings for each image against all descriptors. The output for a single sample will be a ```.json``` file that contains the ratings     for each descriptor.<br><br>
+   <ins>Arguments Description:</ins><br>
    * ```imgs_dir (str)``` - Path to the directory of created images from phase (1).
-   * ```descriptors (List[str])``` - List of descriptors to use. We supply a default set, so this field is optional.
+   * ```descriptors (List[str])``` - List of descriptors to use. We supply a default set, so this field is optional.<br><br>
 
 ## Train from Scratch
 First in ```semantify/config/train_mapper.yaml``` fill the following fields:
@@ -81,6 +81,18 @@ First in ```semantify/config/train_mapper.yaml``` fill the following fields:
 These are **MUST** arguments to fill in order to train the mapper, in the ```.yaml``` file you will find more configuration options.
 
 Then, to train the mapper run:
-```bash
+```
 python semantify/train/train_mapper.py
+```
+
+## Citation
+If you make use of our work, please cite our paper:
+```
+@inproceedings{Semantify-23,
+    author  = {Omer Gralnik and Guy Gafni and Ariel Shamir},
+    title   = {Semantify: Simplifying the Control of 3D Morphable Models using CLIP},
+    booktitle = {Proceedings of the International Conference on Computer Vision},
+    pages = {Accepted},
+    year    = {2023},
+}
 ```
