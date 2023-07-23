@@ -23,7 +23,6 @@ outputs/**
 
 **.pyc
 *.pkl
-*.png
 *.ckpt
 *.tar
 *.pickle
