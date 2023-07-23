@@ -1,0 +1,15 @@
+defaults:
+  - renderer_kwargs: smplx
+
+output_path: /home/nadav2/dev/data/CLIP2Shape/outs/images_from_demo/image2shape
+model_type: smplx
+specific: female
+model_path: ${get_model_abs_path:${model_type}, ${specific}}
+
+
+images_paths:
+  - /home/nadav2/dev/data/CLIP2Shape/outs/images_to_shape/celebrities/data/images/3_female.jpg
+
+renderer_kwargs:
+    img_size: [1024, 1024]
+    model_type: ${model_type}

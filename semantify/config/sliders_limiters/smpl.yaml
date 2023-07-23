@@ -1,0 +1,20 @@
+neutral:
+  fat: [15.0, 30.0, 20.0]
+  petite: [10.0, 24.0, 18.0]
+  narrow waist: [10.0, 35.0, 20.0]
+  masculine: [8.0, 35.0, 20.0]
+  long torso: [10.0, 30.0, 20.0]
+  small: [0.0, 40.0, 20.0]
+
+male:
+  fat: [14.0, 35.0, 20.0]
+  long legs: [0.0, 30.0, 20.0]
+  proportioned: [0.0, 35.0, 20.0]
+  narrow waist: [15.0, 50.0, 20.0]
+
+female:
+  fat: [18.0, 40.0, 23.0]
+  narrow waist: [10.0, 40.0, 20.0]
+  small: [10.0, 30.0, 20.0]
+  long legs: [0.0, 24.0, 18.0]
+  proportioned: [0.0, 50.0, 20.0]

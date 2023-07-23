@@ -1,0 +1,1 @@
+{"num_stats": 4, "lr": 0.0001, "out_features": 10, "hidden_size": [800, 500], "num_hiddens": 1, "labels": [["lion"], ["cow"], ["cat"], ["dog"]]}

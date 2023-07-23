@@ -1,0 +1,23 @@
+neutral:
+  fat: [13.0, 40.0, 20.0]
+  masculine: [10.0, 35.0, 20.0]
+  long torso: [0.0, 35.0, 20.0]
+  hourglass: [0.0, 50.0, 20.0]
+  tall: [0.0, 30.0, 20.0]
+  small: [0.0, 50.0, 20.0]
+  rectangular: [0.0, 50.0, 20.0]
+  proportioned: [0.0, 50.0, 20.0]
+
+male:
+  fat: [13.0, 35.0, 20.0]
+  muscular: [0.0, 50.0, 20.0]
+  long torso: [0.0, 31.0, 20.0]
+  petite: [0.0, 50.0, 20.0]
+  small: [0.0, 50.0, 20.0]
+  rectangular: [0.0, 50.0, 20.0]
+
+female:
+  fat: [17.0, 35.0, 20.0]
+  proportioned: [10.0, 27.0, 20.0]
+  petite: [0.0, 35.0, 20.0]
+  narrow waist: [0.0, 50.0, 20.0]

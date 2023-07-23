@@ -1,0 +1,52 @@
+hydra:
+  run:
+    dir: /home/nadav2/dev/repos/CLIP2Shape/models/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+models_dir: /home/nadav2/dev/repos/CLIP2Shape/models
+
+seed: 42
+
+tensorboard_logger:
+  name: check_of_algo_flame_shape # IMPORTANT
+  save_dir: /home/nadav2/dev/data/CLIP2Shape/runs
+  log_graph: True
+
+train_size: 0.8
+
+callbacks:
+  model_checkpoint:
+    _target_: pytorch_lightning.callbacks.ModelCheckpoint
+    monitor: "val_loss"
+    mode: "min"
+    save_top_k: 1
+    verbose: False
+    dirpath: /home/nadav2/dev/repos/CLIP2Shape/models
+    filename: "epoch_{epoch:03d}"
+    auto_insert_metric_name: False
+
+dataloader:
+  batch_size: 500
+  num_workers: 1
+  shuffle: True
+  drop_last: False
+
+trainer:
+  gpus: 1
+  max_epochs: 50
+  check_val_every_n_epoch: 5
+  log_every_n_steps: 3
+
+dataset:
+  data_dir: /home/nadav2/dev/data/CLIP2Shape/images/flame_textured
+  optimize_features:
+    - shape_params  # IMPORTANT
+  out_features: 10
+  labels_to_get:
+    - fat
+    - long neck
+    - big forhead
+
+model_conf:
+  hidden_size: [800, 500]
+  out_features: 10
+  num_hiddens: 1

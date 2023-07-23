@@ -1,0 +1,1 @@
+{"num_stats": 5, "lr": 0.0001, "out_features": 10, "hidden_size": [800, 500], "num_hiddens": 1, "labels": [["fat"], ["narrow waist"], ["small"], ["long legs"], ["proportioned"]]}

@@ -1,0 +1,15 @@
+flame:
+  batch_size: 1
+  use_face_contour: False
+  use_3D_translation: True
+  dtype: torch.float32
+  device: torch.device("cpu")
+  shape_params: 100
+  expression_params: 50
+  flame_model_path: /home/nadav2/dev/repos/CLIP2Shape/Flame/flame2020/generic_model.pkl
+  ring_margin: 0.5
+  ring_loss_weight: 1.0
+  static_landmark_embedding_path: /home/nadav2/dev/repos/CLIP2Shape/Flame/flame2020/flame_static_embedding_68.pkl
+  pose_params: 6
+
+for_image: False

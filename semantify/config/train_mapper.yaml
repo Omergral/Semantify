@@ -1,0 +1,45 @@
+hydra:
+  run:
+    dir: ${tensorboard_logger.save_dir}/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+output_path: # FILL LOCATION TO SAVE THE MODEL CKPT
+run_name:  # FILL NAME OF THE RUN
+
+seed: 42
+
+tensorboard_logger:
+  name: ${run_name}
+  save_dir: ${append_to_root_dir:train_logs}
+  log_graph: True
+
+train_size: 0.8
+
+dataloader:
+  batch_size: 1500
+  num_workers: 1
+  shuffle: True
+  drop_last: False
+
+trainer:
+  gpus: 1
+  max_epochs: 50
+  check_val_every_n_epoch: 5
+  log_every_n_steps: 3
+
+dataset:
+  data_dir: # FILL LOCATION OF THE DATA
+  optimize_features:
+    - betas  # betas (SMPLX | SMPL)/ beta (SMAL) / expression_params (FLAME) / shape_params (FLAME)
+  out_features: ${model_conf.out_features}
+  labels_to_get:  # FILL DESCRIPTORS TO OPTIMIZE
+    - fat
+    - muscular
+    - rectangular
+    - long torso
+    - petite
+    - small
+
+model_conf:
+  hidden_size: [800, 500]
+  out_features: 10
+  num_hiddens: 1

@@ -1,0 +1,54 @@
+repo_path: /home/nadav2/dev/repos/CLIP2Shape
+data_path: /home/nadav2/dev/data/CLIP2Shape
+
+demo_kwargs:
+
+  # FLAME - expression
+  # texture: ${repo_path}/Flame/flame2020/mesh.png
+  # model_path: ${repo_path}/production/flame_expression.ckpt
+  # model_type: flame
+  # with_face: True
+  # device: cuda
+  # on_parameters: False 
+  # gender: neutral
+  # out_dir: ${repo_path}/objs
+
+  # FLAME - shape
+  # texture: ${repo_path}/Flame/flame2020/mesh.png
+  # model_path: ${repo_path}/pre_production/failure_case_flame_shape.ckpt
+  # model_type: flame
+  # with_face: False
+  # device: cuda
+  # on_parameters: False 
+  # gender: neutral
+  # out_dir: ${repo_path}/objs
+
+  # SMPLX
+  # texture: ${repo_path}/SMPLX/textures/smplx_texture_m_alb.png
+  # model_path: ${repo_path}/pre_production/smplx_new_test_good.ckpt
+  # model_type: smplx
+  # with_face: False
+  # device: cuda
+  # on_parameters: False 
+  # gender: neutral
+  # out_dir: ${repo_path}/objs
+
+  # SMAL
+  # texture:  # there is no texture for smal yet
+  # model_path: ${repo_path}/production/smal.ckpt
+  # model_type: smal
+  # with_face: False
+  # device: cuda
+  # on_parameters: False
+  # gender: neutral
+  # out_dir: ${repo_path}/objs
+
+  # GENERIC
+  with_face: False
+  device: cuda
+  on_parameters: True 
+  gender: neutral
+  model_type: smplx
+  texture: #${repo_path}/Flame/flame2020/mesh.png
+  model_path: # keep empty
+  out_dir: ${data_path}/images/flame_expressions_new
