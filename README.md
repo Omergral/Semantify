@@ -25,7 +25,12 @@ pip install -e .
 ```
 
 ## Download Models
-TO BE FILLED
+* FLAME
+  * Register to [FLAME](https://flame.is.tue.mpg.de/) and download the following:<br>
+    1. FLAME 2020
+    2. SET THE PATH TO THE TEXTURE FILE
+    3. Download [static landmarks embedding](https://github.com/TimoBolkart/TF_FLAME/blob/master/data/flame_static_embedding_68.pkl)
+    4. Download [flame.py script](https://github.com/soubhiksanyal/FLAME_PyTorch/blob/master/flame_pytorch/flame.py)
 
 ## Run Demos
 ### Sliders Application
