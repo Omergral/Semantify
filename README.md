@@ -1,4 +1,4 @@
-<h1 align="center">Semantify:<br>Simplifying the Control of 3D Morphable Models using CLIP<br>ICCV 2023</h1>
+<img width="305" alt="image" src="https://github.com/Omergral/Semantify/assets/75261279/f05f92d8-10d3-4bcb-a4be-ffec6a2ba6c5"><h1 align="center">Semantify:<br>Simplifying the Control of 3D Morphable Models using CLIP<br>ICCV 2023</h1>
 
 <h2 align="center"><p>
   <a href="https://Omergral.github.io/Semantify" align="center">🖥️ Project Page</a> | 
@@ -27,11 +27,22 @@ pip install -e .
 ## Download Models
 * FLAME
   * Register to [FLAME](https://flame.is.tue.mpg.de/) and download the following:<br>
-    1. FLAME 2020
-    2. SET THE PATH TO THE TEXTURE FILE
-    3. Download [static landmarks embedding](https://github.com/TimoBolkart/TF_FLAME/blob/master/data/flame_static_embedding_68.pkl)
-    4. Download [flame.py script](https://github.com/soubhiksanyal/FLAME_PyTorch/blob/master/flame_pytorch/flame.py)
-
+    - FLAME 2020
+    - FLAME texture space
+    - Download [static landmarks embedding](https://github.com/TimoBolkart/TF_FLAME/blob/master/data/flame_static_embedding_68.pkl)
+    - Download [flame.py script](https://github.com/soubhiksanyal/FLAME_PyTorch/blob/master/flame_pytorch/flame.py)
+  * Then organize the file as follows in ```semantify/assets/flame```:
+      ```
+      ├── flame
+      │   ├── female_model.pkl
+      │   ├── flame.py
+      │   ├── flame_static_embedding_68.pkl
+      │   ├── ft.npy
+      │   ├── generic_model.pkl
+      │   ├── male_model.pkl
+      │   ├── mean.npy
+      │   └── vt.npy
+      ```
 ## Run Demos
 ### Sliders Application
 ```
