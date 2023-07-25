@@ -1,4 +1,4 @@
-<img width="305" alt="image" src="https://github.com/Omergral/Semantify/assets/75261279/f05f92d8-10d3-4bcb-a4be-ffec6a2ba6c5"><h1 align="center">Semantify:<br>Simplifying the Control of 3D Morphable Models using CLIP<br>ICCV 2023</h1>
+<h1 align="center">Semantify:<br>Simplifying the Control of 3D Morphable Models using CLIP<br>ICCV 2023</h1>
 
 <h2 align="center"><p>
   <a href="https://Omergral.github.io/Semantify" align="center">🖥️ Project Page</a> | 
