@@ -40,7 +40,7 @@ class Pytorch3dRenderer:
         self.background_color = background_color
         self.texture_optimization = texture_optimization
         tex_path = TexturesPaths[model_type.upper()].value if model_type is not None and use_tex else None
-        self.tex_map = cv2.cvtColor(cv2.imread(tex_path), cv2.COLOR_BGR2RGB) if tex_path is not None else None
+        self.tex_map = self._read_tex_img(tex_path)
         self.height, self.width = (
             img_size if isinstance(img_size, tuple) or isinstance(img_size, ListConfig) or isinstance(img_size, list) else (img_size, img_size)
         )
@@ -67,12 +67,29 @@ class Pytorch3dRenderer:
             shader=self.shader,
         )
 
+    def _read_tex_img(self, tex_path: Optional[str] = None) -> Union[None, np.ndarray]:
+        """
+        This function returns a loaded texture image given a path.
+        We assume working with SMPLX/FLAME default textures, hence it supports
+        only .png and .npy files, such that the texutre in npy in BGR.
+        """
+        if tex_path is not None:
+            if tex_path.endswith(".png"):
+                return cv2.cvtColor(cv2.imread(tex_path), cv2.COLOR_BGR2RGB)
+            elif tex_path.endswith(".npy"):
+                img = np.load(tex_path)
+                return img[..., ::-1]
+            else:
+                raise ValueError("unrecognized texture type")
+        else:
+            return None
+        
     @staticmethod
     def get_texture(device, vt, ft, texture):
         verts_uvs = torch.as_tensor(vt, dtype=torch.float32, device=device)
         faces_uvs = torch.as_tensor(ft, dtype=torch.long, device=device)
 
-        texture_map = torch.as_tensor(texture, device=device, dtype=torch.float32) / 255.0
+        texture_map = torch.as_tensor(texture.copy(), device=device, dtype=torch.float32) / 255.0
 
         texture = TexturesUV(
             maps=texture_map[None],

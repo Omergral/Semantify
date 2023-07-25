@@ -111,15 +111,11 @@ class ThreeDMMUtils:
             self.vt_smplx = np.load(append_to_root_dir("assets/smplx/textures/smpl_uv_map.npy"))
             self.ft_smplx = self.smplx_faces
         else:
-            flame_uv_path = append_to_root_dir("assets/flame/flame2020/flame_texture_data_v6.pkl")
-            flame_uv = np.load(flame_uv_path, allow_pickle=True)
-            self.vt_flame = flame_uv["vt_plus"]
-            self.ft_flame = flame_uv["ft_plus"]
+            self.vt_flame = np.load(append_to_root_dir("assets/flame/vt.npy"))
+            self.ft_flame = np.load(append_to_root_dir("assets/flame/ft.npy")).astype(np.int64)
 
     def _get_flame_faces(self) -> np.ndarray:
-        flame_uv_path = append_to_root_dir("assets/flame/flame2020/flame_texture_data_v6.pkl")
-        flame_uv = np.load(flame_uv_path, allow_pickle=True)
-        self.flame_faces = flame_uv["f_plus"]
+        self.flame_faces = self.flame_layer.faces.astype(np.int64)
 
     def _get_smal_faces(self) -> np.ndarray:
         smal_model_path = append_to_root_dir("assets/smal/smal_CVPR2017.pkl")
