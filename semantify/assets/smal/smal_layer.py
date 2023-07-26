@@ -1,3 +1,9 @@
+"""
+This script is taken from https://github.com/silviazuffi/smalst/tree/master/smal_model
+This is an implemented Pytorch version of the SMAL model by [Zuffi et al. 2017]
+"""
+
+
 import numpy as np
 import torch
 from torch.autograd import Variable
@@ -165,26 +171,15 @@ def undo_chumpy(x):
 
 
 class SMAL(nn.Module):
-    def __init__(self, device, shape_family_id=-1, dtype=torch.float):
+    def __init__(self, device, pkl_path, shape_family_id=-1, dtype=torch.float):
         super(SMAL, self).__init__()
 
-        # -- Load SMPL params --
-        # with open(pkl_path, 'r') as f:
-        #     dd = pkl.load(f)
-
-        smal_model_path = "/home/nadav2/dev/repos/CLIP2Shape/SMAL/smal_CVPR2017.pkl"
-        with open(smal_model_path, "rb") as f:
+        with open(pkl_path, "rb") as f:
             dd = pkl.load(f, encoding="latin1")
 
         self.f = dd["f"]
 
         self.faces = torch.from_numpy(self.f.astype(int)).to(device)
-
-        # replaced logic in here (which requried SMPL library with L58-L68)
-        # v_template = get_smal_template(
-        #     model_name=config.SMAL_FILE,
-        #     data_name=config.SMAL_DATA_FILE,
-        #     shape_family_id=shape_family_id)
 
         v_template = dd["v_template"]
 
@@ -197,7 +192,7 @@ class SMAL(nn.Module):
         self.shapedirs = Variable(torch.Tensor(shapedir), requires_grad=False).to(device)
 
         if shape_family_id != -1:
-            with open("/home/nadav2/dev/repos/CLIP2Shape/SMAL/smal_CVPR2017_data.pkl", "rb") as f:
+            with open(pkl_path, "rb") as f:
                 u = pkl._Unpickler(f)
                 u.encoding = "latin1"
                 data = u.load()
@@ -484,7 +479,7 @@ def align_smal_template_to_symmetry_axis(v):
     return v, left_inds, right_inds, center_inds
 
 
-def get_smal_layer():
+def get_smal_layer(device: str, pkl_path: str):
 
-    smal_layer = SMAL("cuda")
+    smal_layer = SMAL(device, pkl_path)
     return smal_layer

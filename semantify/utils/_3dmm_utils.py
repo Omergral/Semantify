@@ -123,12 +123,6 @@ class ThreeDMMUtils:
     def _get_flame_faces(self) -> np.ndarray:
         self.flame_faces = self.flame_layer.faces.astype(np.int64)
 
-    def _get_smal_faces(self) -> np.ndarray:
-        smal_model_path = append_to_root_dir("assets/smal/smal_CVPR2017.pkl")
-        with open(smal_model_path, "rb") as f:
-            smal_model = pkl.load(f, encoding="latin1")
-        self.smal_faces = smal_model["f"].astype(np.int32)
-
     @staticmethod
     def init_flame_params_dict(device: str = "cuda") -> Dict[str, torch.tensor]:
         flame_dict = {}
@@ -199,10 +193,10 @@ class ThreeDMMUtils:
         return verts, self.flame_faces, self.vt_flame, self.ft_flame
 
     def get_smal_model(
-        self, beta: torch.tensor, device: Optional[Literal["cuda", "cpu"]] = "cpu", py3d: bool = True
+        self, beta: torch.tensor, device: Optional[Literal["cuda", "cpu"]] = "cuda", py3d: bool = True
     ) -> Tuple[np.ndarray, np.ndarray, None, None]:
         if not hasattr(self, "smal_layer"):
-            self.smal_layer = get_smal_layer()
+            self.smal_layer = get_smal_layer(device, append_to_root_dir("assets/smal/smal_CVPR2017.pkl"))
         smal_params = SMALParams(beta=beta)
         if device == "cuda":
             smal_params.params = smal_params.to(device)
@@ -212,7 +206,7 @@ class ThreeDMMUtils:
             verts = self.smal_layer(**smal_params.params)[0].detach().cpu().numpy()
         verts = self.rotate_mesh_smal(verts, py3d)
         if not hasattr(self, "smal_faces"):
-            self._get_smal_faces()
+            self.smal_faces = self.smal_layer.faces
         return verts, self.smal_faces, None, None
 
     def get_body_pose(self) -> torch.Tensor:
