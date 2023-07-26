@@ -3,6 +3,7 @@ import smplx
 import numpy as np
 import pickle as pkl
 from attrdict import AttrDict
+from pytorch3d.io import load_obj
 from torch.nn import functional as F
 from typing import Tuple, Optional, Union, Dict, Any, Literal
 from scipy.spatial.transform import Rotation
@@ -23,14 +24,14 @@ class ThreeDMMUtils:
     def _get_smplx_layer(self, gender: str, num_coeffs: int, get_smpl: bool):
         if get_smpl:
             if gender == "male":
-                smplx_path = append_to_root_dir("assets/smpl/smpl_male.pkl")
+                smplx_path = append_to_root_dir("assets/smpl/SMPL_MALE.pkl")
             elif gender == "female":
-                smplx_path = append_to_root_dir("assets/smpl/smpl_female.pkl")
+                smplx_path = append_to_root_dir("assets/smpl/SMPL_FEMALE.pkl")
             else:
                 smplx_path = append_to_root_dir("assets/smpl/SMPL_NEUTRAL.pkl")
         else:
             if gender == "neutral":
-                smplx_path = append_to_root_dir("assets/smplx/SMPLX_NEUTRAL_2020.npz")
+                smplx_path = append_to_root_dir("assets/smplx/SMPLX_NEUTRAL.npz")
             elif gender == "male":
                 smplx_path = append_to_root_dir("assets/smplx/SMPLX_MALE.npz")
             else:
@@ -39,12 +40,17 @@ class ThreeDMMUtils:
         if get_smpl:
             self.smplx_faces = self.smplx_layer.faces_tensor
         else:
-            model_data = np.load(smplx_path, allow_pickle=True)
-            self.smplx_faces = model_data["f"].astype(np.int32)
+            self._load_smplx_attributes(smplx_path)
 
     def _get_flame_layer(self, gender: Literal["male", "female", "neutral"]) -> FLAME:
         cfg = self.get_flame_model_kwargs(gender)
         self.flame_layer = FLAME(cfg).cuda()
+
+    def _load_smplx_attributes(self, file_path: str):
+        with np.load(file_path) as smplx_data:
+            self.vt_smplx = smplx_data["vt"]
+            self.ft_smplx = smplx_data["ft"].astype(np.int32)
+            self.smplx_faces = smplx_data["f"].astype(np.int32)
 
     @property
     def smplx_offset_tensor(self):
@@ -103,16 +109,16 @@ class ThreeDMMUtils:
 
         return verts, self.smplx_faces, self.vt_smplx, self.ft_smplx
 
-    def _get_vt_ft(self, model_type: Literal["smplx", "flame", "smpl"]) -> Tuple[np.ndarray, np.ndarray]:
-        if model_type == "smplx":
-            self.vt_smplx = np.load(append_to_root_dir("assets/smplx/textures/smplx_vt.npy"))
-            self.ft_smplx = np.load(append_to_root_dir("assets/smplx/textures/smplx_ft.npy"))
-        elif model_type == "smpl":
-            self.vt_smplx = np.load(append_to_root_dir("assets/smplx/textures/smpl_uv_map.npy"))
-            self.ft_smplx = self.smplx_faces
-        else:
+    def _get_vt_ft(self, model_type: Literal["flame", "smpl"]) -> Tuple[np.ndarray, np.ndarray]:
+        if model_type == "smpl":
+            smpl_texture_data = load_obj(append_to_root_dir("assets/smpl/smpl_uv.obj"))
+            self.vt_smplx = smpl_texture_data[-1].verts_uvs
+            self.ft_smplx = smpl_texture_data[1].textures_idx
+        elif model_type == "flame":
             self.vt_flame = np.load(append_to_root_dir("assets/flame/vt.npy"))
             self.ft_flame = np.load(append_to_root_dir("assets/flame/ft.npy")).astype(np.int64)
+        else:
+            raise TypeError("model_type must be one of ['flame', 'smpl']")
 
     def _get_flame_faces(self) -> np.ndarray:
         self.flame_faces = self.flame_layer.faces.astype(np.int64)

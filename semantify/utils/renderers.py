@@ -2,6 +2,7 @@ import cv2
 import torch
 import numpy as np
 import open3d as o3d
+from pathlib import Path
 from omegaconf import ListConfig
 from scipy.spatial.transform import Rotation
 from pytorch3d.structures import Meshes
@@ -16,7 +17,7 @@ from pytorch3d.renderer import (
     TexturesVertex,
     TexturesUV,
     BlendParams,
-    Materials,
+    Materials
 )
 from typing import Tuple, Optional, Union, List, Dict, Any, Literal
 from semantify.utils.enums import TexturesPaths
@@ -74,13 +75,16 @@ class Pytorch3dRenderer:
         only .png and .npy files, such that the texutre in npy in BGR.
         """
         if tex_path is not None:
-            if tex_path.endswith(".png"):
-                return cv2.cvtColor(cv2.imread(tex_path), cv2.COLOR_BGR2RGB)
-            elif tex_path.endswith(".npy"):
-                img = np.load(tex_path)
-                return img[..., ::-1]
+            if Path(tex_path).is_file() and Path(tex_path).exists():
+                if tex_path.endswith(".png"):
+                    return cv2.cvtColor(cv2.imread(tex_path), cv2.COLOR_BGR2RGB)
+                elif tex_path.endswith(".npy"):
+                    img = np.load(tex_path)
+                    return img[..., ::-1]
+                else:
+                    raise ValueError("unrecognized texture type")
             else:
-                raise ValueError("unrecognized texture type")
+                raise ValueError("texture path does not exist")
         else:
             return None
         
