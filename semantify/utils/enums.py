@@ -5,7 +5,7 @@ from semantify.utils.paths_utils import append_to_root_dir
 class TexturesPaths(Enum):
     SMPLX = append_to_root_dir("assets/smplx/textures/smplx_texture_m_alb.png")
     SMPL = append_to_root_dir("assets/smplx/textures/smplx_texture_m_alb.png")
-    FLAME = append_to_root_dir("assets/flame/flame2020/def_tex.png")
+    FLAME = append_to_root_dir("assets/flame/mean.npy")
     SMAL = None
 
 

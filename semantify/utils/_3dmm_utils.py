@@ -140,11 +140,11 @@ class ThreeDMMUtils:
     @staticmethod
     def get_flame_model_kwargs(gender: Literal["male", "female", "neutral"]) -> Dict[str, Any]:
         if gender == "male":
-            flame_model_path = append_to_root_dir("assets/flame/flame2020/male_model.pkl")
+            flame_model_path = append_to_root_dir("assets/flame/male_model.pkl")
         elif gender == "female":
-            flame_model_path = append_to_root_dir("assets/flame/flame/female_model.pkl")
+            flame_model_path = append_to_root_dir("assets/flame/female_model.pkl")
         else:
-            flame_model_path = append_to_root_dir("assets/flame/flame2020/generic_model.pkl")
+            flame_model_path = append_to_root_dir("assets/flame/generic_model.pkl")
 
         kwargs = {
             "batch_size": 1,
@@ -158,7 +158,7 @@ class ThreeDMMUtils:
             "ring_margin": 0.5,
             "ring_loss_weight": 1.0,
             "static_landmark_embedding_path": append_to_root_dir(
-                "assets/flame/flame2020/flame_static_embedding_68.pkl"
+                "assets/flame/flame_static_embedding_68.pkl"
             ),
             "pose_params": 6,
         }
