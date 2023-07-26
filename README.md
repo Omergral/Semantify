@@ -1,4 +1,4 @@
-<h1 align="center">Semantify:<br>Simplifying the Control of 3D Morphable Models using CLIP<br>ICCV 2023</h1>
+![image](https://github.com/Omergral/Semantify/assets/75261279/113331da-6b87-42e6-a52c-10996ceac16a)<h1 align="center">Semantify:<br>Simplifying the Control of 3D Morphable Models using CLIP<br>ICCV 2023</h1>
 
 <h2 align="center"><p>
   <a href="https://Omergral.github.io/Semantify" align="center">🖥️ Project Page</a> | 
@@ -25,12 +25,15 @@ pip install -e .
 ```
 
 ## Download Models
-* FLAME
+### Semantify Mappers
+
+### 3D Morphable Models
+* **FLAME** [Li et al. 2017]
   * Register to [FLAME](https://flame.is.tue.mpg.de/) and download the following:<br>
     - FLAME 2020
     - FLAME texture space
     - Download [static landmarks embedding](https://github.com/TimoBolkart/TF_FLAME/blob/master/data/flame_static_embedding_68.pkl)
-  * Then organize the files as follows in ```semantify/assets/flame```:
+  * Then organize the files in ```semantify/assets/flame``` as follows:
       ```
       ├── flame
       │   ├── female_model.pkl
@@ -42,11 +45,26 @@ pip install -e .
       │   ├── mean.npy
       │   └── vt.npy
       ```
-* SMPL-X
+* **SMPL** [Loper et al. 2015]
+  * Register to [SMPL](https://smpl.is.tue.mpg.de/) and download the following:<br>
+    - Download version 1.1.0 for python 2.7
+    - Download UV map in OBJ format
+    - Textures could be downloaded from [MeshCapade](https://github.com/Meshcapade/SMPL_texture_samples/tree/main/Textured_Mesh_samples)
+  * Then organize the files in ```semantify/assets/smplx``` as follows:
+      ```
+      ├── smpl
+      │   ├── SMPL_FEMALE.pkl
+      │   ├── SMPL_MALE.pkl
+      │   ├── SMPL_NEUTRAL.pkl
+      │   ├── smpl_texture.png
+      │   └── smpl_uv.obj
+      ```
+
+* **SMPL-X** [Pavlakos et al. 2019]
   * Register to [SMPLX](https://smpl-x.is.tue.mpg.de/) and download the following:<br>
     - SMPL-X v1.1 (NPZ+PKL, 830MB)
     - Textures could be downloaded from [qzane](https://github.com/qzane/textured_smplx/blob/main/data/obj1/texture_smplx.png) or using the SMPL texture which will not fit perfectly, but our method works well with it.<br>
-  * Then organize the files as follows in ```semantify/assets/smplx```:
+  * Then organize the files in ```semantify/assets/smplx``` as follows:
       ```
       ├── smplx
       │   ├── a_pose.npy
