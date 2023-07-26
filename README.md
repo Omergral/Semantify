@@ -73,6 +73,15 @@ pip install -e .
       │   ├── SMPLX_NEUTRAL.npz
       │   └── smplx_texture.png
       ```
+* **SMAL** [Zuffi et al. 2017]
+  * Register to [SMAL](https://smal.is.tue.mpg.de/) and download the following:<br>
+    - SMAL model version 1.0.0
+  * Then get ```smal_CVPR2017.pkl``` file and place it in ```semantify/assets/smal```
+      ```
+      ├── smal
+      │   ├── smal_CVPR2017.pkl
+      │   └── smal_layer.py
+      ```
 
 ## Run Demos
 ### Sliders Application
