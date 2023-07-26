@@ -30,8 +30,7 @@ pip install -e .
     - FLAME 2020
     - FLAME texture space
     - Download [static landmarks embedding](https://github.com/TimoBolkart/TF_FLAME/blob/master/data/flame_static_embedding_68.pkl)
-    - Download [flame.py script](https://github.com/soubhiksanyal/FLAME_PyTorch/blob/master/flame_pytorch/flame.py)
-  * Then organize the file as follows in ```semantify/assets/flame```:
+  * Then organize the files as follows in ```semantify/assets/flame```:
       ```
       ├── flame
       │   ├── female_model.pkl
@@ -43,6 +42,20 @@ pip install -e .
       │   ├── mean.npy
       │   └── vt.npy
       ```
+* SMPL-X
+  * Register to [SMPLX](https://smpl-x.is.tue.mpg.de/) and download the following:<br>
+    - SMPL-X v1.1 (NPZ+PKL, 830MB)
+    - Textures could be downloaded from [qzane](https://github.com/qzane/textured_smplx/blob/main/data/obj1/texture_smplx.png) or using the SMPL texture which will not fit perfectly, but our method works well with it.<br>
+  * Then organize the files as follows in ```semantify/assets/smplx```:
+      ```
+      ├── smplx
+      │   ├── a_pose.npy
+      │   ├── SMPLX_FEMALE.npz
+      │   ├── SMPLX_MALE.npz
+      │   ├── SMPLX_NEUTRAL.npz
+      │   └── smplx_texture.png
+      ```
+
 ## Run Demos
 ### Sliders Application
 ```
