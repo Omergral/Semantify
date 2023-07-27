@@ -132,11 +132,13 @@ pip install -e .
 python semantify/applications/sliders_demo_py3d.py --model_type <MODELTYPE> --specific <SPECIFIC>
 ```
 <ins>Arguments Description:</ins>
-* ```model_type``` - "smplx" | "smpl" | "flame" | "smal"
-* ```specific``` - "male" | "female" | "neutral" | "expression" | "shape"
-* ```image_path (str)``` - If you want to run the demo on an image, provide the path to the image
-* ```mapper_path (str)``` - If you don't want to use Semantify's mappers, set the path to desired ckpt file
-* ```use_raw_blendshapes``` - Use the raw parametric blendshapes of the model
+* ```model_type (str)``` - "smplx" | "smpl" | "flame" | "smal"
+* ```specific (str)``` - "male" | "female" | "neutral" | "expression" | "shape"
+* ```image_path (Optional[str])``` - If you want to run the demo on an image, provide the path to the image
+* ```mapper_path (Optional[str])``` - If you don't want to use Semantify's mappers, set the path to desired ckpt file
+* ```use_raw_blendshapes (Optional)``` - Use the raw parametric blendshapes of the model
+* ```out_dir (Optional[str])``` - Path of directory to save outputs in<br>
+for more optional arguments please visit ```semantify/applications/sliders_demo_py3d.py```
 
 ### Image-to-Shape
 ```
@@ -145,9 +147,9 @@ python semantify/applications/image2shape.py --images_paths <IMAGES_PATHS> --mod
 
 <ins>Arguments Description</ins>
 * ```images_paths (List[str])``` - Paths to the images you wish to run the demo on
-* ```model_type``` - "smplx" | "smpl" | "flame" | "smal"
-* ```specific``` - "male" | "female" | "neutral" | "expression" | "shape"
-* ```mapper_path (str)``` - If you don't want to use Semantify's mappers, set the path to desired ckpt file
+* ```model_type (str)``` - "smplx" | "smpl" | "flame" | "smal"
+* ```specific (str)``` - "male" | "female" | "neutral" | "expression" | "shape"
+* ```mapper_path (Optional[str])``` - If you don't want to use Semantify's mappers, set the path to desired ckpt file
 
 ## Dataset Creation
 1. Create Data
