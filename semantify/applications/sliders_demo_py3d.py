@@ -159,7 +159,7 @@ class SlidersApp:
 
         if image_path is not None:
             self.target_image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
-            if self.model_type in ["smpl", "smplx"] and not self.on_parameters:
+            if self.model_type in ["smpl", "smplx"] and not self.on_parameters and Path(append_to_root_dir("assets/spin/smpl_mean_params.npz")).exists():
                 spin_model = hmr(append_to_root_dir("assets/spin/smpl_mean_params.npz")).to(device)
                 checkpoint = torch.load(append_to_root_dir("assets/spin/model_checkpoint.pt"))
                 spin_model.load_state_dict(checkpoint["model"], strict=False)

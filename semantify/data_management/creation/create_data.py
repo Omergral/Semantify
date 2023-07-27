@@ -62,7 +62,9 @@ class DataCreator:
 
     def __call__(self):
         # start creating data
-        for _ in tqdm(range(self.num_of_imgs), total=self.num_of_imgs, desc="creating data"):
+        progress_bar = tqdm(range(self.num_of_imgs), total=self.num_of_imgs, desc="creating data")
+        gen_img_num = 0
+        while gen_img_num < self.num_of_imgs:
 
             # get image id
             try:
@@ -91,6 +93,7 @@ class DataCreator:
                 **model_kwargs, gender=self.gender, num_coeffs=self.num_coeffs
             )
             if self.model_type == "flame":
+                # restrict mouth opening in order to avoid unrealistic meshes
                 y_top_lip = verts[0, VertsIdx.TOP_LIP_MIN.value : VertsIdx.TOP_LIP_MAX.value, 1]
                 y_bottom_lip = verts[0, VertsIdx.BOTTOM_LIP_MIN.value : VertsIdx.BOTTOM_LIP_MAX.value, 1]
                 if y_top_lip - y_bottom_lip < 1e-3:
@@ -115,6 +118,9 @@ class DataCreator:
                 else:
                     img = self.renderer.render_mesh(verts=verts, faces=faces[None], vt=vt, ft=ft)
                     self.renderer.save_rendered_image(img, f"{self.output_path}/{img_name}.png")
+
+            gen_img_num += 1
+            progress_bar.update(1)
 
             create_metadata(metadata=model_kwargs, file_path=f"{self.output_path}/{img_name}.json")
 
