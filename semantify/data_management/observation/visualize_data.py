@@ -7,7 +7,13 @@ from semantify.utils.general import get_min_max_values, get_logger, normalize_da
 
 
 def main(args):
+    """
+    Visualize the data with the labels stats on the images
 
+    Keyboard Options:
+        q - quit
+        d - delete the image and the json file
+    """
     logger = get_logger(__name__)
 
     logger.info("calculating min max values")
