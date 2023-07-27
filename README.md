@@ -1,4 +1,4 @@
-![image](https://github.com/Omergral/Semantify/assets/75261279/113331da-6b87-42e6-a52c-10996ceac16a)<h1 align="center">Semantify:<br>Simplifying the Control of 3D Morphable Models using CLIP<br>ICCV 2023</h1>
+<h1 align="center">Semantify:<br>Simplifying the Control of 3D Morphable Models using CLIP<br>ICCV 2023</h1>
 
 <h2 align="center"><p>
   <a href="https://Omergral.github.io/Semantify" align="center">🖥️ Project Page</a> | 
@@ -26,7 +26,35 @@ pip install -e .
 
 ## Download Models
 ### Semantify Mappers
-
+  * run ```bash ./get_mappers.sh```
+    ```
+    models_ckpts
+      ├── flame
+      │   ├── expression
+      │   │   ├── flame_expression.ckpt
+      │   │   └── flame_expression_metadata.json
+      │   └── shape
+      │       ├── flame_shape.ckpt
+      │       └── flame_shape_metadata.json
+      ├── smal
+      │   ├── smal.ckpt
+      │   └── smal_metadata.json
+      ├── smpl
+      │   ├── smpl_female.ckpt
+      │   ├── smpl_female_metadata.json
+      │   ├── smpl_male.ckpt
+      │   ├── smpl_male_metadata.json
+      │   ├── smpl_neutral.ckpt
+      │   └── smpl_neutral_metadata.json
+      └── smplx
+          ├── smplx_female.ckpt
+          ├── smplx_female_metadata.json
+          ├── smplx_male.ckpt
+          ├── smplx_male_metadata.json
+          ├── smplx_neutral.ckpt
+          └── smplx_neutral_metadata.json
+    ```
+    
 ### 3D Morphable Models
 * **FLAME** [Li et al. 2017]
   * Register to [FLAME](https://flame.is.tue.mpg.de/) and download the following:<br>
