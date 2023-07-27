@@ -17,7 +17,6 @@ from semantify.utils.paths_utils import append_to_root_dir
 class ThreeDMMUtils:
     def __init__(self, device: str = "cuda", comparison_mode: bool = False):
         self.device = device
-        self.body_pose = torch.tensor(np.load(append_to_root_dir("assets/smplx/a_pose.npy")))
         self.production_dir = append_to_root_dir("pre_production")
         self.comparison_mode = comparison_mode
 
@@ -36,6 +35,7 @@ class ThreeDMMUtils:
                 smplx_path = append_to_root_dir("assets/smplx/SMPLX_MALE.npz")
             else:
                 smplx_path = append_to_root_dir("assets/smplx/SMPLX_FEMALE.npz")
+        self.body_pose = torch.tensor(np.load(append_to_root_dir("assets/smplx/a_pose.npy")))
         self.smplx_layer = smplx.build_layer(model_path=smplx_path, num_expression_coeffs=10, num_betas=num_coeffs)
         if get_smpl:
             self.smplx_faces = self.smplx_layer.faces_tensor

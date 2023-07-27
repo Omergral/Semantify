@@ -21,6 +21,8 @@ multirun/**
 outputs/**
 **/train_logs/**
 
+!semantify/assets/smplx/a_pose.npy
+
 **.pyc
 *.pkl
 *.ckpt
