@@ -36,14 +36,14 @@ pip install -e .
   * Then organize the files in ```semantify/assets/flame``` as follows:
       ```
       ├── flame
-      │   ├── female_model.pkl
-      │   ├── flame.py
-      │   ├── flame_static_embedding_68.pkl
-      │   ├── ft.npy
-      │   ├── generic_model.pkl
-      │   ├── male_model.pkl
-      │   ├── mean.npy
-      │   └── vt.npy
+          ├── female_model.pkl
+          ├── flame.py
+          ├── flame_static_embedding_68.pkl
+          ├── ft.npy
+          ├── generic_model.pkl
+          ├── male_model.pkl
+          ├── mean.npy
+          └── vt.npy
       ```
 * **SMPL** [Loper et al. 2015]
   * Register to [SMPL](https://smpl.is.tue.mpg.de/) and download the following:<br>
@@ -53,11 +53,11 @@ pip install -e .
   * Then organize the files in ```semantify/assets/smplx``` as follows:
       ```
       ├── smpl
-      │   ├── SMPL_FEMALE.pkl
-      │   ├── SMPL_MALE.pkl
-      │   ├── SMPL_NEUTRAL.pkl
-      │   ├── smpl_texture.png
-      │   └── smpl_uv.obj
+          ├── SMPL_FEMALE.pkl
+          ├── SMPL_MALE.pkl
+          ├── SMPL_NEUTRAL.pkl
+          ├── smpl_texture.png
+          └── smpl_uv.obj
       ```
 
 * **SMPL-X** [Pavlakos et al. 2019]
@@ -67,11 +67,11 @@ pip install -e .
   * Then organize the files in ```semantify/assets/smplx``` as follows:
       ```
       ├── smplx
-      │   ├── a_pose.npy
-      │   ├── SMPLX_FEMALE.npz
-      │   ├── SMPLX_MALE.npz
-      │   ├── SMPLX_NEUTRAL.npz
-      │   └── smplx_texture.png
+          ├── a_pose.npy
+          ├── SMPLX_FEMALE.npz
+          ├── SMPLX_MALE.npz
+          ├── SMPLX_NEUTRAL.npz
+          └── smplx_texture.png
       ```
 * **SMAL** [Zuffi et al. 2017]
   * Register to [SMAL](https://smal.is.tue.mpg.de/) and download the following:<br>
@@ -79,9 +79,24 @@ pip install -e .
   * Then get ```smal_CVPR2017.pkl``` file and place it in ```semantify/assets/smal```
       ```
       ├── smal
-      │   ├── smal_CVPR2017.pkl
-      │   └── smal_layer.py
+          ├── smal_CVPR2017.pkl
+          └── smal_layer.py
       ```
+### Pose Estimation
+  * **SPIN** [Kolotouros et al. 2019]
+    * Clone [SPIN](https://github.com/nkolot/SPIN) repo, then run:
+      ```
+      cd SPIN
+      ./fetch_data.sh
+      ```
+    * Then copy ```SPIN/data/smpl_mean_params.npz``` and ```SPIN/data/model_checkpoint.pt``` to ```semantify/assets/spin```
+      ```
+      └── spin
+          ├── model_checkpoint.pt
+          ├── smpl_mean_params.npz
+          └── spin_model.py
+      ```
+
 
 ## Run Demos
 ### Sliders Application
