@@ -140,6 +140,11 @@ python semantify/applications/sliders_demo_py3d.py --model_type <MODELTYPE> --sp
 * ```out_dir (Optional[str])``` - Path of directory to save outputs in<br>
 for more optional arguments please visit ```semantify/applications/sliders_demo_py3d.py```
 
+<p align="center">
+    <img src="https://github.com/Omergral/Semantify/blob/master/static/images/semantify_smplx_male_app.gif" alt="example" width=50%>
+</p>
+
+
 ### Image-to-Shape
 ```
 python semantify/applications/image2shape.py --images_paths <IMAGES_PATHS> --model_type <TYPE> --specific <SPECIFIC> --output_path <PATH>
