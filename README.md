@@ -78,7 +78,7 @@ pip install -e .
     - Download version 1.1.0 for python 2.7
     - Download UV map in OBJ format
     - Textures could be downloaded from [MeshCapade](https://github.com/Meshcapade/SMPL_texture_samples/tree/main/Textured_Mesh_samples)
-  * Then organize the files in ```semantify/assets/smplx``` as follows:
+  * Then organize the files in ```semantify/assets/smpl``` as follows:
       ```
       ├── smpl
           ├── SMPL_FEMALE.pkl
