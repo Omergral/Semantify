@@ -28,6 +28,9 @@ def args_parser():
 
 
 class ClusterImages:
+    """
+    Clustering implementation was based on https://medium.com/analytics-vidhya/how-to-determine-the-optimal-k-for-k-means-708505d204eb
+    """
     def __init__(self, plot_results: bool = False, topk_value: int = 5, kmax: int = 10):
         self.max_images = 3500
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
