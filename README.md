@@ -194,11 +194,12 @@ python semantify/train/train_mapper.py
 ## Citation
 If you make use of our work, please cite our paper:
 ```
-@inproceedings{Semantify-23,
-    author  = {Omer Gralnik and Guy Gafni and Ariel Shamir},
-    title   = {Semantify: Simplifying the Control of 3D Morphable Models using CLIP},
-    booktitle = {Proceedings of the International Conference on Computer Vision},
-    pages = {Accepted},
-    year    = {2023},
+@misc{gralnik2023semantify,
+      title={Semantify: Simplifying the Control of 3D Morphable Models using CLIP}, 
+      author={Omer Gralnik and Guy Gafni and Ariel Shamir},
+      year={2023},
+      eprint={2308.07415},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
