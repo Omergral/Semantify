@@ -2,7 +2,7 @@
 
 <h2 align="center"><p>
   <a href="https://Omergral.github.io/Semantify" align="center">🖥️ Project Page</a> | 
-  <a href="https://arxiv.org/abs/2211.17256" align="center">📄 Paper</a>
+  <a href="https://arxiv.org/abs/2308.07415" align="center">📄 Paper</a>
 </p></h2>
 
 <p align="center">
