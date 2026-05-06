@@ -203,3 +203,26 @@ If you make use of our work, please cite our paper:
     pages     = {14554-14564}
 }
 ```
+
+## License
+
+The Semantify codebase is released under the [MIT License](LICENSE).
+
+### Third-party code
+
+The following files included in this repository are from third-party sources and retain their original licenses:
+
+| File | Source | License |
+|---|---|---|
+| `semantify/assets/flame/flame.py` | [soubhiksanyal/FLAME_PyTorch](https://github.com/soubhiksanyal/FLAME_PyTorch) | MIT |
+| `semantify/assets/smal/smal_layer.py` | [silviazuffi/smalst](https://github.com/silviazuffi/smalst) | MIT |
+| `semantify/assets/spin/spin_model.py` | [nkolot/SPIN](https://github.com/nkolot/SPIN) | BSD 3-Clause |
+
+### Third-party model weights
+
+The 3D morphable model weights used by Semantify are **not** included in this repository and are subject to their own separate licenses. You must register and agree to each model's terms before downloading:
+
+- **FLAME** — [flame.is.tue.mpg.de](https://flame.is.tue.mpg.de/)
+- **SMPL** — [smpl.is.tue.mpg.de](https://smpl.is.tue.mpg.de/)
+- **SMPL-X** — [smpl-x.is.tue.mpg.de](https://smpl-x.is.tue.mpg.de/)
+- **SMAL** — [smal.is.tue.mpg.de](https://smal.is.tue.mpg.de/)

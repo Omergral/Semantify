@@ -7,21 +7,33 @@ Deep learning framework for training and testing
 It can also be used for 2D or 3D optimisation applications
 
 Author: Soubhik Sanyal
-Copyright (c) 2019, Soubhik Sanyal
-All rights reserved.
+Source: https://github.com/soubhiksanyal/FLAME_PyTorch
 
-Max-Planck-Gesellschaft zur Foerderung der Wissenschaften e.V. (MPG) is holder of all proprietary rights on this
-computer program.
-You can only use this computer program if you have closed a license agreement with MPG or you get the right to use
-the computer program from someone who is authorized to grant you that right.
-Any use of the computer program without a valid license is prohibited and liable to prosecution.
-Copyright 2019 Max-Planck-Gesellschaft zur Foerderung der Wissenschaften e.V. (MPG). acting on behalf of its
-Max Planck Institute for Intelligent Systems and the Max Planck Institute for Biological Cybernetics.
-All rights reserved.
+MIT License
 
-More information about FLAME is available at http://flame.is.tue.mpg.de.
+Copyright (c) 2019 Soubhik Sanyal
 
-For questions regarding the PyTorch implementation please contact soubhik.sanyal@tuebingen.mpg.de
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+Note: The FLAME model weights (pkl files) are subject to a separate license
+agreement with the Max Planck Institute. Register at http://flame.is.tue.mpg.de
+to obtain them.
 """
 # Modified from smplx code [https://github.com/vchoutas/smplx] for FLAME
 
